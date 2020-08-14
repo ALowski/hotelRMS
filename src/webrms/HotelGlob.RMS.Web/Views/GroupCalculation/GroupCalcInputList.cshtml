@@ -1,0 +1,54 @@
+﻿@model Hotels.Basic.GroupCalcInput
+
+<div class="form-horizontal">
+    <table style="width:100%">
+        <tr>
+            <th>Date</th>
+            @{
+                if (Model.Inputs.Count > 0)
+                {
+                    foreach (var room in Model.Inputs[0].RoomTypes)
+                    {
+                        <th>Room Type @room.Value.Name</th>
+                    }
+                    if (Model.Inputs[0].MealTypes != null && Model.Inputs[0].MealTypes.Any())
+                    {
+                        foreach (var meal in Model.Inputs[0].MealTypes)
+                        {
+                            <th>Meal Type @meal.Value.Name</th>
+                        }
+                    }
+                }
+            }
+        <tr />
+        @{
+            for (int i = 0; i < Model.Inputs.Count; i++)
+            {
+                <tr>
+                    <td>@Model.Inputs[i].Date.ToShortDateString()</td>
+                    @Html.HiddenFor(model => model.Inputs[i].Date)
+                    @{foreach (var room in Model.Inputs[0].RoomTypes)
+                        {
+                            <td>
+                                <div>@Html.EditorFor(model => model.Inputs[i].RoomTypes[room.Key].Value)</div>
+                                <div> @Model.Inputs[i].RoomTypes[room.Key].EmptyRooms / @Model.Inputs[i].RoomTypes[room.Key].PlanEmptyRooms</div>
+                            </td>
+                            @Html.HiddenFor(model => model.Inputs[i].RoomTypes[room.Key].PlanEmptyRooms)
+                            @Html.HiddenFor(model => model.Inputs[i].RoomTypes[room.Key].EmptyRooms)
+                        }
+                        if (Model.Inputs[0].MealTypes != null && Model.Inputs[0].MealTypes.Any())
+                        {
+                            foreach (var meal in Model.Inputs[0].MealTypes)
+                            {
+                                <td style="vertical-align: top" >
+                                    <div >@Html.EditorFor(model => model.Inputs[i].MealTypes[meal.Key])</div>
+                                </td>
+                            }
+                        }
+                    }
+                </tr>
+            }
+        }
+</table>
+
+</div>

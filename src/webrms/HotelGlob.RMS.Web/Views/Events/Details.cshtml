@@ -1,0 +1,60 @@
+﻿@model HotelGlob.RMS.Data.Models.Event
+@{
+    ViewBag.Title = "Event";
+}
+<div>
+    <h4>Event</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Hotel.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Hotel.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Start)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Start)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.End)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.End)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Coef)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Coef)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PriceCoef)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PriceCoef)
+        </dd>
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index", new { hotelId = Model.HotelId })
+</p>

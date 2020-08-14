@@ -1,0 +1,20 @@
+﻿<Window x:Class="Hotels.Configurator.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:p="clr-namespace:Hotels.Configurator.Properties"
+        xmlns:local="clr-namespace:Hotels.Configurator"
+        mc:Ignorable="d"
+        ResizeMode="CanMinimize"
+        WindowStartupLocation="CenterScreen"
+        Title="Hotels Configurator" Height="579.843" Width="581.25">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="400*"/>
+            <RowDefinition Height="40*"/>
+        </Grid.RowDefinitions>
+        <TabControl x:Name="_tabs" Margin="20, 10" TabStripPlacement="Left" Grid.Row="0" />
+        <Button x:Name="_saveBtn" Content="{x:Static p:Resources.Save}" Width="100" Click="_saveBtn_Click" Grid.Row="1" Margin="20, 0, 0, 20" />
+    </Grid>
+</Window>

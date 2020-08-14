@@ -1,0 +1,79 @@
+﻿@model HotelGlob.RMS.Data.Models.Calculation
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Calculation</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Hotel.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Hotel.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CalculatedOn)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CalculatedOn)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PredictionDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PredictionDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Settings)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Settings)
+        </dd>
+
+    </dl>
+    
+    <h5>Predictions</h5>
+    <hr />
+    
+    <table class="table">
+        <thead>
+            <tr>
+                <th>CategoryType</th>
+                <th>ExpectedLoad</th>
+                <th>MealType</th>
+                <th>Price</th>
+                <th>PriceCushion</th>
+                <th>RoomType</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var prediction in Model.Predictions)
+            {
+                <tr>
+                    <td>@prediction.CategoryType</td>
+                    <td>@prediction.ExpectedLoad</td>
+                    <td>@prediction.MealType</td>
+                    <td>@prediction.Price</td>
+                    <td>@prediction.PriceCushion</td>
+                    <td>@prediction.RoomType</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>
+<p>
+    @Html.ActionLink("Back to List", "Index")
+</p>

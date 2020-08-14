@@ -1,0 +1,72 @@
+﻿@model Hotels.Basic.GroupCalcInput
+@{
+    ViewBag.Title = "Group Calculation";
+}
+
+<h2>Group Calculation</h2>
+
+
+<form action="/" id="inputForm">
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model=>model.HotelId)
+    <div class="form-horizontal">
+
+        <div class="form-group col-md-12">
+            @Html.LabelFor(model => model.Start, htmlAttributes: new { @class = "control-label  " })
+            @Html.EditorFor(model => model.Start, new { @class = "form-control", id = "startDate" })
+            @Html.ValidationMessageFor(model => model.Start, "", new { @class = "text-danger" })
+        </div>
+        <div class="form-group col-md-12">
+            @Html.LabelFor(model => model.End, htmlAttributes: new { @class = "control-label " })
+            @Html.EditorFor(model => model.End, new { @class = "form-control", id = "endDate" })
+            @Html.ValidationMessageFor(model => model.End, "", new { @class = "text-danger" })
+        </div>
+        <div class="form-group col-md-12" id="inputView">
+            @Html.Partial("GroupCalcInputList", Model)
+        </div>
+
+        <div class="form-group col-md-12">
+            <input type="button" value="Calculate" class="btn btn-default" id="calcButton" />
+        </div>
+        <div class="form-group col-md-12" id="outputView" />
+    </div>
+</form>   
+
+    <div>
+        @Html.ActionLink("Back to List", "Index")
+    </div>
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+        <script>
+            $(document).ready(function () {
+                $("#Start,#End").change(function () {
+                    var dtStart=$("#Start").val();
+                    var dtEnd = $("#End").val();
+                    var json = {
+                        Start: dtStart,
+                        End: dtEnd,
+                        Inputs: @Html.Raw(Model.GetInputsJSON())
+                        };
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("GetInputPartialView", "GroupCalculation")',
+                        data: $("#inputForm").serialize(),
+                        success: function (data) {
+                            $("#inputView").html(data);
+                        }
+                    });
+                });
+                $("#calcButton").click(function () {
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("GetOutputPartialView", "GroupCalculation")',
+                        data: $("#inputForm").serialize() ,
+                        success: function (data) {
+                            $("#outputView").html(data);
+                        }
+                    });
+                });
+            });
+        </script>
+    }

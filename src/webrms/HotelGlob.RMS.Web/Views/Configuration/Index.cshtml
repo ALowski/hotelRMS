@@ -1,0 +1,1023 @@
+﻿@using HotelGlob.RMS.Web.Helpers
+@model HotelGlob.RMS.Web.Models.Configuration.ConfigurationViewModel
+@{
+    ViewBag.Title = "Settings";
+    var roomTypes = ViewBag.DbRoomTypes as IEnumerable<SelectListItem>;
+    var mealTypes = ViewBag.DbMealTypes as IEnumerable<SelectListItem>;
+}
+
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.AntiForgeryToken()
+    @Html.Hidden("hotelId", ViewBag.HotelId as object)
+    @Html.HiddenFor(model=>model.RoomTypes.IsEditable)
+    <div class="panel-group">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title pull-left" style="padding:1%">
+                    Seasons
+                </h3>
+                <button class="btn btn-default pull-right" onclick="return insSeasonRow();">Add</button>
+                <div class="clearfix"></div>
+            </div>
+            <div class="panel-body">
+                <table class="table" id="SeasonsTable">
+                    <tr>
+                        <th width="18%">
+                            @Html.DisplayNameFor(model => model.Seasons.FirstOrDefault().Number)
+                        </th>
+                        <th width="18%">
+                            @Html.DisplayNameFor(model => model.Seasons.FirstOrDefault().Start)
+                        </th>
+                        <th width="18%">
+                            @Html.DisplayNameFor(model => model.Seasons.FirstOrDefault().Finish)
+                        </th>
+                        <th width="18%">
+                            @Html.DisplayNameFor(model => model.Seasons.FirstOrDefault().Description)
+                        </th>
+                        <th width="18%">
+                            @Html.DisplayNameFor(model => model.Seasons.FirstOrDefault().Reduction)
+                        </th>
+                        <th width="10%">
+                        </th>
+                    </tr>
+                    @for (int i = 0; i < Model.Seasons.Count(); i++)
+                    {
+                    <tr>
+                        <td>
+                            @Html.EditorFor(model => model.Seasons[i].Number, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Seasons[i].Number, "", new { @class = "text-danger" })
+                        </td>
+                        <td>
+                            @Html.EditorFor(model => model.Seasons[i].Start, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Seasons[i].Start, "", new { @class = "text-danger" })
+                        </td>
+                        <td>
+                            @Html.EditorFor(model => model.Seasons[i].Finish, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Seasons[i].Finish, "", new { @class = "text-danger" })
+                        </td>
+                        <td>
+                            @Html.EditorFor(model => model.Seasons[i].Description, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Seasons[i].Description, "", new { @class = "text-danger" })
+                        </td>
+                        <td>
+                            @Html.EditorFor(model => model.Seasons[i].Reduction, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Seasons[i].Reduction, "", new { @class = "text-danger" })
+                        </td>
+                        <td>
+                            <button class="btn btn-default pull-right" onclick="return deleteSeasonRow(this);"> Delete</button>
+                        </td>
+                    </tr>
+                    }
+                </table>
+            </div>
+        </div>
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title pull-left" style="padding:1%">
+                    Weekdays
+                </h3>
+                <div class="clearfix"></div>
+            </div>
+            <div class="panel-body">
+                <table class="table">
+                    <tr>
+                        <th>
+                            @Html.DisplayName("Day")
+                        </th>
+                        <th>
+                            @Html.DisplayName("Monday")
+                        </th>
+                        <th>
+                            @Html.DisplayName("Tuesday")
+                        </th>
+                        <th>
+                            @Html.DisplayName("Wednesday")
+                        </th>
+                        <th>
+                            @Html.DisplayName("Thursday")
+                        </th>
+                        <th>
+                            @Html.DisplayName("Friday")
+                        </th>
+                        <th>
+                            @Html.DisplayName("Saturday")
+                        </th>
+                        <th>
+                            @Html.DisplayName("Sunday")
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>
+                            @Html.DisplayName("Reduction")
+                        </th>
+                        @for (int i = 0; i < Model.Weekdays.PriceReductions.Count(); i++)
+                        {
+                            <td>
+                                @Html.EditorFor(model => model.Weekdays.PriceReductions[i], new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Weekdays.PriceReductions[i], "This field must be a number.", new { @class = "text-danger" })
+                            </td>
+                        }
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="panel panel-primary" style="overflow:visible;">
+            <div class="panel-heading">
+                <h3 class="panel-title pull-left" style="padding:1%">
+                    Room Types Description
+                </h3>
+                <div class="clearfix"></div>
+            </div>
+            <div class="panel panel-default" style=" border-radius:0 !important;margin-top:0 !important; overflow:visible;">
+                <div class="panel-heading" style=" border-radius:0 !important;margin-top:0 !important;">
+                    <h4 class="panel-title pull-left" style="padding:1%">
+                        Room Types
+                    </h4>
+                    @if (Model.RoomTypes.IsEditable)
+                    {
+                    <button class="btn btn-default pull-right" onclick="return insRoomTypeRow();">Add</button>
+                    }
+                    <div class="clearfix"></div>
+                </div>
+                <div class="panel-body">
+                    <table class="table" id="RoomTypes">
+                        <tr>
+                            @if (Model.RoomTypes.IsEditable)
+                            {
+                                <th width="10%">
+                                    @Html.DisplayNameFor(model => model.RoomTypes.RoomTypes.FirstOrDefault().RoomTypeCode)
+                                </th>
+                                <th width="10%">
+                                    @Html.DisplayNameFor(model => model.RoomTypes.RoomTypes.FirstOrDefault().Name)
+                                </th>
+                                <th width="10%">
+                                    @Html.DisplayNameFor(model => model.RoomTypes.RoomTypes.FirstOrDefault().PeopleNum)
+                                </th>
+                                <th width="10%">
+                                    @Html.DisplayNameFor(model => model.RoomTypes.RoomTypes.FirstOrDefault().Description)
+                                </th>
+                                <th width="10%">
+                                    @Html.DisplayNameFor(model => model.RoomTypes.RoomTypes.FirstOrDefault().LowerBound)
+                                </th>
+                                <th width="10%">
+                                    @Html.DisplayNameFor(model => model.RoomTypes.RoomTypes.FirstOrDefault().UpperBound)
+                                </th>
+                                <th width="10%">
+                                    @Html.DisplayNameFor(model => model.RoomTypes.RoomTypes.FirstOrDefault().OperationalCost)
+                                </th>
+
+                                <th width="10%">
+                                    @Html.DisplayNameFor(model => model.RoomTypes.RoomTypes.FirstOrDefault().MarketBasePrice)
+                                </th>
+                                <th width="10%">
+                                    @Html.DisplayNameFor(model => model.RoomTypes.RoomTypes.FirstOrDefault().Quantity)
+                                </th>
+                                <th width="10%"></th>
+                            }
+                            else
+                            {
+                                <th width="12.5%">
+                                    @Html.DisplayNameFor(model => model.RoomTypes.RoomTypes.FirstOrDefault().Name)
+                                </th>
+                                <th width="12.5%">
+                                    @Html.DisplayNameFor(model => model.RoomTypes.RoomTypes.FirstOrDefault().PeopleNum)
+                                </th>
+                                <th width="12.5%">
+                                    @Html.DisplayNameFor(model => model.RoomTypes.RoomTypes.FirstOrDefault().Description)
+                                </th>
+                                <th width="12.5%">
+                                    @Html.DisplayNameFor(model => model.RoomTypes.RoomTypes.FirstOrDefault().LowerBound)
+                                </th>
+                                <th width="12.5%">
+                                    @Html.DisplayNameFor(model => model.RoomTypes.RoomTypes.FirstOrDefault().UpperBound)
+                                </th>
+                                <th width="12.5%">
+                                    @Html.DisplayNameFor(model => model.RoomTypes.RoomTypes.FirstOrDefault().OperationalCost)
+                                </th>
+
+                                <th width="12.5%">
+                                    @Html.DisplayNameFor(model => model.RoomTypes.RoomTypes.FirstOrDefault().MarketBasePrice)
+                                </th>
+                                <th width="12.5%">
+                                    @Html.DisplayNameFor(model => model.RoomTypes.RoomTypes.FirstOrDefault().Quantity)
+                                </th>
+                            }
+                        </tr>
+                        @for (int i = 0; i < Model.RoomTypes.RoomTypes.Count(); i++)
+                        {
+                        <tr>
+                            @Html.HiddenFor(model => model.RoomTypes.RoomTypes[i].Number, new { htmlAttributes = new { @class = "form-control" } })
+                            @if (Model.RoomTypes.IsEditable)
+                                {
+                                <td>
+                                    @Html.EditorFor(model => model.RoomTypes.RoomTypes[i].RoomTypeCode, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.RoomTypes.RoomTypes[i].RoomTypeCode, "", new { @class = "text-danger" })
+                                </td>
+                                <td>
+                                    @Html.EditorFor(model => model.RoomTypes.RoomTypes[i].Name, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.RoomTypes.RoomTypes[i].Name, "", new { @class = "text-danger" })
+                                </td>
+                                <td>
+                                    @Html.EditorFor(model => model.RoomTypes.RoomTypes[i].PeopleNum, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.RoomTypes.RoomTypes[i].PeopleNum, "", new { @class = "text-danger" })
+                                </td>
+                            }
+                            else
+                            {
+                                <td>
+                                    @Html.DisplayFor(model => model.RoomTypes.RoomTypes[i].Name, new { htmlAttributes = new { @class = "form-control" } })
+                                </td>
+                                <td>
+                                    @Html.HiddenFor(model => model.RoomTypes.RoomTypes[i].PeopleNum)
+                                    @Html.DisplayFor(model => model.RoomTypes.RoomTypes[i].PeopleNum, new { htmlAttributes = new { @class = "form-control" } })
+                                </td>
+                                }
+                            <td>
+                                @Html.EditorFor(model => model.RoomTypes.RoomTypes[i].Description, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.RoomTypes.RoomTypes[i].Description, "", new { @class = "text-danger" })
+                            </td>
+                            <td>
+                                @Html.EditorFor(model => model.RoomTypes.RoomTypes[i].LowerBound, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.RoomTypes.RoomTypes[i].LowerBound, "", new { @class = "text-danger" })
+                            </td>
+                            <td>
+                                @Html.EditorFor(model => model.RoomTypes.RoomTypes[i].UpperBound, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.RoomTypes.RoomTypes[i].UpperBound, "", new { @class = "text-danger" })
+                            </td>
+                            <td>
+                                @Html.EditorFor(model => model.RoomTypes.RoomTypes[i].OperationalCost, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.RoomTypes.RoomTypes[i].OperationalCost, "", new { @class = "text-danger" })
+                            </td>
+                            <td>
+                                @Html.EditorFor(model => model.RoomTypes.RoomTypes[i].MarketBasePrice, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.RoomTypes.RoomTypes[i].MarketBasePrice, "", new { @class = "text-danger" })
+                            </td>
+                            <td>
+                                @Html.EditorFor(model => model.RoomTypes.RoomTypes[i].Quantity, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.RoomTypes.RoomTypes[i].Quantity, "", new { @class = "text-danger" })
+                            </td>
+                            @if (Model.RoomTypes.IsEditable)
+                                {
+                                <td>
+                                    <button class="btn btn-default pull-right" onclick="return deleteRoomTypeRow(this);"> Delete</button>
+                                </td>
+                                }
+                        </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+            <div class="panel panel-default" style=" border-radius:0 !important;margin-top:0 !important; overflow:visible;" id="RoomTypeCoefsPanel">
+                <div class="panel-heading" style=" border-radius:0 !important;margin-top:0 !important;">
+                    <h4 class="panel-title pull-left" style="padding:1%">
+                        Guests Number Coefficients
+                    </h4>
+                    <button class="btn btn-default pull-right" onclick="return insRoomTypeCoefRow();">Add</button>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="panel-body">
+                    <table class="table" id="RoomTypeCoefs">
+                        <tr>
+                            <th width="30%">
+                                @if (Model.RoomTypes.IsEditable)
+                                {
+                                    @Html.DisplayNameFor(model => model.RoomTypes.RoomTypeCoefs.FirstOrDefault().RoomTypeCode)
+                                }
+                                else
+                                {
+                                    @Html.Display("Room Type");
+                                }
+                            </th>
+                            <th width="30%">
+                                @Html.DisplayNameFor(model => model.RoomTypes.RoomTypeCoefs.FirstOrDefault().PeopleNum)
+                            </th>
+                            <th width="30%">
+                                @Html.DisplayNameFor(model => model.RoomTypes.RoomTypeCoefs.FirstOrDefault().Coef)
+                            </th>
+                            <th width="10%">
+                            </th>
+                        </tr>
+
+                        @for (int i = 0; i < Model.RoomTypes.RoomTypeCoefs.Count(); i++)
+                        {
+                            <tr>
+                                <td>
+                                    @if (Model.RoomTypes.IsEditable)
+                                    {
+
+                                        @Html.EditorFor(model => model.RoomTypes.RoomTypeCoefs[i].RoomTypeCode, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.RoomTypes.RoomTypeCoefs[i].RoomTypeCode, "", new { @class = "text-danger" })
+                                    }
+                                    else
+                                    {
+                                        @Html.DropDownListFor(model => model.RoomTypes.RoomTypeCoefs[i].RoomTypeCode, new SelectList(roomTypes, "Value", "Text", Model.RoomTypes.RoomTypeCoefs[i].RoomTypeCode), new { @class = "selectpicker" })
+                                        @Html.ValidationMessageFor(model => model.RoomTypes.RoomTypeCoefs[i].RoomTypeCode, "", new { @class = "text-danger" })
+                                    }
+                                </td>
+                                <td>
+                                    @Html.EditorFor(model => model.RoomTypes.RoomTypeCoefs[i].PeopleNum, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.RoomTypes.RoomTypeCoefs[i].PeopleNum, "", new { @class = "text-danger" })
+                                </td>
+                                <td>
+                                    @Html.EditorFor(model => model.RoomTypes.RoomTypeCoefs[i].Coef, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.RoomTypes.RoomTypeCoefs[i].Coef, "", new { @class = "text-danger" })
+                                </td>
+                                <td>
+                                    <button class="btn btn-default pull-right" onclick="return deleteRoomTypeCoefRow(this);"> Delete</button>
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+            <div class="panel panel-default" style=" border-radius:0 !important;margin-top:0 !important; overflow:visible;">
+                <div class="panel-heading" style=" border-radius:0 !important;margin-top:0 !important;">
+                    <h4 class="panel-title pull-left" style="padding:1%">
+                        Block Rooms
+                    </h4>
+                    <button class="btn btn-default pull-right" onclick="return insBlockRoomTypeRow();">Add</button>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="panel-body">
+                    <table class="table" id="BlockRoomTypes">
+                        <tr>
+                            @if (Model.RoomTypes.IsEditable)
+                            {
+                            <th width="21%">
+                            </th>
+                            <th width="23%">
+                                @Html.DisplayNameFor(model => model.RoomTypes.ChildRoomTypes.FirstOrDefault().Parent)
+                            </th>
+                            <th width="23%">
+                                @Html.DisplayNameFor(model => model.RoomTypes.ChildRoomTypes.FirstOrDefault().Child)
+                            </th>
+                            <th width="23%">
+                                @Html.DisplayNameFor(model => model.RoomTypes.ChildRoomTypes.FirstOrDefault().Quantity)
+                            </th>
+                            <th width="10%">
+                            </th>
+                            }
+                            else
+                            {
+                            <th width="30%">
+                                @Html.DisplayNameFor(model => model.RoomTypes.ChildRoomTypes.FirstOrDefault().Parent)
+                            </th>
+                            <th width="30%">
+                                @Html.DisplayNameFor(model => model.RoomTypes.ChildRoomTypes.FirstOrDefault().Child)
+                            </th>
+                            <th width="30%">
+                                @Html.DisplayNameFor(model => model.RoomTypes.ChildRoomTypes.FirstOrDefault().Quantity)
+                            </th>
+                            <th width="10%">
+                            </th>
+                            }
+                        </tr>
+                        @for (int i = 0; i < Model.RoomTypes.ChildRoomTypes.Count(); i++)
+                        {
+                        <tr>
+                            @if (Model.RoomTypes.IsEditable)
+                                {
+                                <td><h5>Room Type Codes:</h5></td>
+                                <td>
+                                    @Html.EditorFor(model => model.RoomTypes.ChildRoomTypes[i].Parent, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.RoomTypes.ChildRoomTypes[i].Parent, "", new { @class = "text-danger" })
+                                </td>
+                                <td>
+                                    @Html.EditorFor(model => model.RoomTypes.ChildRoomTypes[i].Child, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.RoomTypes.ChildRoomTypes[i].Child, "", new { @class = "text-danger" })
+                                </td>
+                                <td>
+                                    @Html.EditorFor(model => model.RoomTypes.ChildRoomTypes[i].Quantity, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.RoomTypes.ChildRoomTypes[i].Quantity, "", new { @class = "text-danger" })
+                                </td>
+                                }
+                                else
+                                {
+                                <td>
+                                    @Html.DropDownListFor(model => model.RoomTypes.ChildRoomTypes[i].Parent, new SelectList(roomTypes, "Value", "Text", Model.RoomTypes.ChildRoomTypes[i].Parent), new { @class = "selectpicker" })
+                                    @Html.ValidationMessageFor(model => model.RoomTypes.ChildRoomTypes[i].Parent, "", new { @class = "text-danger" })
+                                </td>
+                                <td>
+                                    @Html.DropDownListFor(model => model.RoomTypes.ChildRoomTypes[i].Child, new SelectList(roomTypes, "Value", "Text", Model.RoomTypes.ChildRoomTypes[i].Child), new { @class = "selectpicker" })
+                                    @Html.ValidationMessageFor(model => model.RoomTypes.ChildRoomTypes[i].Child, "", new { @class = "text-danger" })
+                                </td>
+                                <td>
+                                    @Html.EditorFor(model => model.RoomTypes.ChildRoomTypes[i].Quantity, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.RoomTypes.ChildRoomTypes[i].Quantity, "", new { @class = "text-danger" })
+                                </td>
+                                }
+                            <td>
+                                <button class="btn btn-default pull-right" onclick="return deleteBlockRoomTypeRow(this);"> Delete</button>
+                            </td>
+                        </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+            <div class="panel panel-default" style=" border-radius:0 !important;margin-top:0 !important; overflow:visible;">
+                <div class="panel-heading" style=" border-radius:0 !important;margin-top:0 !important;">
+                    <h4 class="panel-title pull-left" style="padding:1%">
+                        Room Types Price Constraints
+                    </h4>
+                    <button class="btn btn-default pull-right" onclick="return insRoomTypeConstRow();">Add</button>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="panel-body">
+                    <table class="table" id="RoomTypesConst">
+                        <tr>
+                            @if (Model.RoomTypes.IsEditable)
+                            {
+                            <th width="30%">
+                            </th>
+                            <th width="30%">
+                                @Html.DisplayNameFor(model => model.RoomTypes.PriceConstraints.FirstOrDefault().Less)
+                            </th>
+                            <th width="30%">
+                                @Html.DisplayNameFor(model => model.RoomTypes.PriceConstraints.FirstOrDefault().More)
+                            </th>
+                            <th width="10%">
+                            </th>
+                            }
+                            else
+                            {
+                            <th width="45%">
+                                @Html.DisplayNameFor(model => model.RoomTypes.PriceConstraints.FirstOrDefault().Less)
+                            </th>
+                            <th width="45%">
+                                @Html.DisplayNameFor(model => model.RoomTypes.PriceConstraints.FirstOrDefault().More)
+                            </th>
+                            <th width="10%">
+                            </th>
+                            }
+                        </tr>
+                        @for (int i = 0; i < Model.RoomTypes.PriceConstraints.Count(); i++)
+                        {
+                        <tr>
+                            @if (Model.RoomTypes.IsEditable)
+                                {
+                                <td><h5>Room Type Codes:</h5></td>
+                                <td>
+                                    @Html.EditorFor(model => model.RoomTypes.PriceConstraints[i].Less, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.RoomTypes.PriceConstraints[i].Less, "", new { @class = "text-danger" })
+                                </td>
+                                <td>
+                                    @Html.EditorFor(model => model.RoomTypes.PriceConstraints[i].More, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.RoomTypes.PriceConstraints[i].More, "", new { @class = "text-danger" })
+                                </td>
+                                }
+                                else
+                                {
+                                <td>
+                                    @Html.DropDownListFor(model => model.RoomTypes.PriceConstraints[i].Less, new SelectList(roomTypes,"Value","Text", Model.RoomTypes.PriceConstraints[i].Less), new { @class = "selectpicker" })
+                                    @Html.ValidationMessageFor(model => model.RoomTypes.PriceConstraints[i].Less, "", new { @class = "text-danger" })
+                                </td>
+                                <td>
+                                    @Html.DropDownListFor(model => model.RoomTypes.PriceConstraints[i].More, new SelectList(roomTypes as SelectList, "Value", "Text", Model.RoomTypes.PriceConstraints[i].More), new { @class = "selectpicker" })
+                                    @Html.ValidationMessageFor(model => model.RoomTypes.PriceConstraints[i].More, "", new { @class = "text-danger" })
+                                </td>
+                                }
+                            <td>
+                                <button class="btn btn-default pull-right" onclick="return deleteRoomTypeConstRow(this);"> Delete</button>
+                            </td>
+                        </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-primary" style=" overflow:visible;">
+            <div class="panel-heading">
+                <div class="col-md-9">
+                    <h3 class="panel-title pull-left" style="padding:1%">
+                        Board Types Description
+                    </h3>
+                </div>
+                <div class="col-md-3 pull-right" style="vertical-align:middle; line-height: 2em;">
+                    @Html.LabelFor(model => model.MealTypes.UseInDynamicCalculation, htmlAttributes: new { @class = "control-label", @style = "margin:0; vertical-align:middle" })
+                    @Html.CheckBoxFor(model => model.MealTypes.UseInDynamicCalculation,  new { @class = "control-label", @style = "margin:0; vertical-align:middle" , @onclick = "hideRoomPriceCoefs(this);" } )
+                </div>
+                <div class="clearfix"></div>
+            </div>
+
+            <div class="panel panel-default" style=" border-radius:0 !important;margin-top:0 !important; overflow:visible;">
+                <div class="panel-heading" style=" border-radius:0 !important;margin-top:0 !important;">
+                    <h4 class="panel-title pull-left" style="padding:1%">
+                        Board Types
+                    </h4>
+                    <button class="btn btn-default pull-right" onclick="return insMealTypeRow();">Add</button>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="panel-body">
+                    <table class="table" id="MealTypes">
+                        <tr>
+                            <th width="22.5%">
+                                @Html.DisplayNameFor(model => model.MealTypes.MealTypes.FirstOrDefault().Number)
+                            </th>
+                            <th width="22.5%">
+                                @Html.DisplayNameFor(model => model.MealTypes.MealTypes.FirstOrDefault().Description)
+                            </th>
+                            <th width="22.5%">
+                                @Html.DisplayNameFor(model => model.MealTypes.MealTypes.FirstOrDefault().OperationalCost)
+                            </th>
+                            <th width="22.5%">
+                                @Html.DisplayNameFor(model => model.MealTypes.MealTypes.FirstOrDefault().MarketBasePrice)
+                            </th>
+                            <th width="10%">
+
+                            </th>
+                        </tr>
+                        @for (int i = 0; i < Model.MealTypes.MealTypes.Count(); i++)
+                        {
+                        <tr>
+                            <td>
+                                @Html.DropDownListFor(model => model.MealTypes.MealTypes[i].Number, new SelectList(mealTypes, "Value", "Text", Model.MealTypes.MealTypes[i].Number), new { @class = "selectpicker" })
+                                @Html.ValidationMessageFor(model => model.MealTypes.MealTypes[i].Number, "", new { @class = "text-danger" })
+                            </td>
+                            <td>
+                                @Html.EditorFor(model => model.MealTypes.MealTypes[i].Description, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.MealTypes.MealTypes[i].Description, "", new { @class = "text-danger" })
+                            </td>
+                            <td>
+                                @Html.EditorFor(model => model.MealTypes.MealTypes[i].OperationalCost, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.MealTypes.MealTypes[i].OperationalCost, "", new { @class = "text-danger" })
+                            </td>
+                            <td>
+                                @Html.EditorFor(model => model.MealTypes.MealTypes[i].MarketBasePrice, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.MealTypes.MealTypes[i].MarketBasePrice, "", new { @class = "text-danger" })
+                            </td>
+                            <td>
+                                <button class="btn btn-default pull-right" onclick="return deleteMealTypeRow(this);"> Delete</button>
+                            </td>
+                        </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+            <div class="panel panel-default" style=" border-radius:0 !important;margin-top:0 !important; overflow:visible;">
+                <div class="panel-heading" style=" border-radius:0 !important;margin-top:0 !important;">
+                    <h4 class="panel-title pull-left" style="padding:1%">
+                        Board Types Price Constraints
+                    </h4>
+                    <button class="btn btn-default pull-right" onclick="return insMealTypeConstRow();">Add</button>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="panel-body">
+                    <table class="table" id="MealTypesConst">
+                        <tr>
+                            <th width="45%">
+                                @Html.DisplayNameFor(model => model.MealTypes.PriceConstraints.FirstOrDefault().Less)
+                            </th>
+                            <th width="45%">
+                                @Html.DisplayNameFor(model => model.MealTypes.PriceConstraints.FirstOrDefault().More)
+                            </th>
+                            <th width="10%"> </th>
+                        </tr>
+                        @for (int i = 0; i < Model.MealTypes.PriceConstraints.Count(); i++)
+                        {
+                        <tr>
+                            <td>
+                                @Html.DropDownListFor(model => model.MealTypes.PriceConstraints[i].Less, new SelectList(mealTypes, "Value", "Text", Model.MealTypes.PriceConstraints[i].Less), new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.MealTypes.PriceConstraints[i].Less, "", new { @class = "text-danger" })
+                            </td>
+                            <td>
+                                @Html.DropDownListFor(model => model.MealTypes.PriceConstraints[i].More, new SelectList(mealTypes, "Value", "Text", Model.MealTypes.PriceConstraints[i].More), new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.MealTypes.PriceConstraints[i].More, "", new { @class = "text-danger" })
+                            </td>
+                            <td>
+                                <button class="btn btn-default pull-right" onclick="return deleteMealTypeConstRow(this);"> Delete</button>
+                            </td>
+                        </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title pull-left" style="padding:1%">
+                    Categories Description
+                </h3>
+                <div class="clearfix"></div>
+            </div>
+            <div class="panel panel-default" style=" border-radius:0 !important;margin-top:0 !important; overflow:visible;">
+                <div class="panel-heading">
+                    <h3 class="panel-title pull-left" style="padding:1%">
+                        Length of stay
+                    </h3>
+                    <button class="btn btn-default pull-right" onclick="return insStayPerRow();">Add</button>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="panel-body">
+                    <table class="table" id="StayPerTable">
+                        <tr>
+                            <th width="30%">
+                                @Html.DisplayNameFor(model => model.Categories.StayPeriods.FirstOrDefault().Number)
+                            </th>
+                            <th width="30%">
+                                @Html.DisplayNameFor(model => model.Categories.StayPeriods.FirstOrDefault().LowerBound)
+                            </th>
+                            <th width="30%">
+                                @Html.DisplayNameFor(model => model.Categories.StayPeriods.FirstOrDefault().UpperBound)
+                            </th>
+                            <th width="10%">
+                            </th>
+                        </tr>
+                        @for (int i = 0; i < Model.Categories.StayPeriods.Count(); i++)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(model => model.Categories.StayPeriods[i].Number, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.HiddenFor(model => model.Categories.StayPeriods[i].Number, new { htmlAttributes = new { @class = "form-control" } })
+                                </td>
+                                <td>
+                                    @Html.EditorFor(model => model.Categories.StayPeriods[i].LowerBound, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Categories.StayPeriods[i].LowerBound, "", new { @class = "text-danger" })
+                                </td>
+                                <td>
+                                    @Html.EditorFor(model => model.Categories.StayPeriods[i].UpperBound, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Categories.StayPeriods[i].UpperBound, "", new { @class = "text-danger" })
+                                </td>
+                                <td>
+                                    <button class="btn btn-default pull-right" onclick="return deleteStayPerRow(this);"> Delete</button>
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+            <div class="panel panel-default" style=" border-radius:0 !important;margin-top:0 !important; overflow:visible;">
+                <div class="panel-heading">
+                    <h3 class="panel-title pull-left" style="padding:1%">
+                        Booking window
+                    </h3>
+                    <button class="btn btn-default pull-right" onclick="return insBookingPerRow();">Add</button>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="panel-body">
+                    <table class="table" id="BookingPerTable">
+                        <tr>
+                            <th width="30%">
+                                @Html.DisplayNameFor(model => model.Categories.BookingPeriods.FirstOrDefault().Number)
+                            </th>
+                            <th width="30%">
+                                @Html.DisplayNameFor(model => model.Categories.BookingPeriods.FirstOrDefault().LowerBound)
+                            </th>
+                            <th width="30%">
+                                @Html.DisplayNameFor(model => model.Categories.BookingPeriods.FirstOrDefault().UpperBound)
+                            </th>
+                            <th width="10%">
+                            </th>
+                        </tr>
+                        @for (int i = 0; i < Model.Categories.BookingPeriods.Count(); i++)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(model => model.Categories.BookingPeriods[i].Number, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.HiddenFor(model => model.Categories.BookingPeriods[i].Number, new { htmlAttributes = new { @class = "form-control" } })
+                                </td>
+                                <td>
+                                    @Html.EditorFor(model => model.Categories.BookingPeriods[i].LowerBound, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Categories.BookingPeriods[i].LowerBound, "", new { @class = "text-danger" })
+                                </td>
+                                <td>
+                                    @Html.EditorFor(model => model.Categories.BookingPeriods[i].UpperBound, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Categories.BookingPeriods[i].UpperBound, "", new { @class = "text-danger" })
+                                </td>
+                                <td>
+                                    <button class="btn btn-default pull-right" onclick="return deleteBookingPerRow(this);"> Delete</button>
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+            <div class="panel panel-default" style=" border-radius:0 !important;margin-top:0 !important; overflow:visible;">
+                <div class="panel-heading">
+                    <h3 class="panel-title pull-left" style="padding:1%">
+                        Price Reductions
+                    </h3>
+                    <button class="btn btn-default pull-right" onclick="return insCatPriceReductionRow();">Add</button>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="panel-body">
+                    <table class="table" id="CatPriceReductionTable">
+                        <tr>
+                            <th width="30%">
+                                @Html.DisplayNameFor(model => model.Categories.PriceReductions.FirstOrDefault().StayPeriodNumber)
+                            </th>
+                            <th width="30%">
+                                @Html.DisplayNameFor(model => model.Categories.PriceReductions.FirstOrDefault().BookingPeriodNumber)
+                            </th>
+                            <th width="30%">
+                                @Html.DisplayNameFor(model => model.Categories.PriceReductions.FirstOrDefault().Reduction)
+                            </th>
+                            <th width="10%">
+                            </th>
+                        </tr>
+                        @for (int i = 0; i < Model.Categories.PriceReductions.Count(); i++)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.EditorFor(model => model.Categories.PriceReductions[i].StayPeriodNumber, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Categories.PriceReductions[i].StayPeriodNumber, "", new { @class = "text-danger" })
+                                </td>
+                                <td>
+                                    @Html.EditorFor(model => model.Categories.PriceReductions[i].BookingPeriodNumber, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Categories.PriceReductions[i].BookingPeriodNumber, "", new { @class = "text-danger" })
+                                </td>
+                                <td>
+                                    @Html.EditorFor(model => model.Categories.PriceReductions[i].Reduction, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Categories.PriceReductions[i].Reduction, "", new { @class = "text-danger" })
+                                </td>
+                                <td>
+                                    <button class="btn btn-default pull-right" onclick="return deleteCatPriceReductionRow(this);"> Delete</button>
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="form-group">
+        <div class="col-md-10">
+            <input type="submit" value="Save" class="btn btn-default" />
+        </div>
+    </div>
+}
+@section Scripts {
+                                        @Scripts.Render("~/bundles/jqueryval")
+
+
+    <script>
+        function replaceIndex(str, index) {
+                                            return str.replace(/_0__/g, "_" + index + "__").replace(/\[0\]/g, "[" + index + "]");
+                                        }
+                                        function getDeleteButton(functionName)
+        {
+                                            return "<button class='btn btn-default pull-right' onclick='return " + functionName+"(this);'> Delete </button>";
+                                        }
+                                        function getHiddenNumberField(prefix, index, name, description, value, isDouble)
+        {
+                                            return getNumberFieldWithType(prefix, index, name, description, value, "hidden");
+                                        }
+                                        function getNumberField(prefix, index, name, description, value, isDouble) {
+                                            var type = "number";
+                                            if (isDouble == 1) {
+                                                type = "text";
+                                            }
+                                            return getNumberFieldWithType(prefix, index, name, description, value, type);
+                                        }
+                                        function getNumberFieldWithType(prefix, index, name, description, value, type) {
+                                            var prefix1 = (prefix.replace(/\./g, "_")) + "_" + index + "__" + name;
+                                            var prefix2 = prefix + "[" + index + "]." + name;
+                                            return "<input class='form-control text-box single-line' data-val='true' aria-required='true' id='" + prefix1 + "' data-val-number='The field " + description + " must be a number.' data-val-required='The " + description + " field is required.' type='" + type + "' value='" + value + "' name='" + prefix2 + "' aria-describedby='" + prefix1 + "-error'/> <span class='text-danger field-validation-valid'  data-valmsg-replace='true' data-valmsg-for='" + prefix2 + "'></span>";
+                                        }
+                                        function getTextField(prefix, index, name) {
+                                            var prefix1 = (prefix.replace(/\./g, "_")) + "_" + index + "__" + name;
+                                            var prefix2 = prefix + "[" + index + "]." + name;
+                                            return str = "<input class='form-control text-box single-line' id='" + prefix1 + "' type='text' value='' name='" + prefix2 + "' aria-describedby='" + prefix1 + "-error'/> <span class='text-danger field-validation-valid'  data-valmsg-replace='true' data-valmsg-for='" + prefix2 + "'></span>";
+                                        }
+                                        function deleteRow(row,id) {
+                                            var i = row.parentNode.parentNode.rowIndex;
+                                            document.getElementById(id).deleteRow(i);
+                                            validationInitialize();
+                                            return false;
+                                        }
+                                        function deleteSeasonRow(row)
+        {
+                                            return deleteRow(row, 'SeasonsTable');
+                                        }
+                                        function deleteRoomTypeRow(row) {
+                                            return deleteRow(row, 'RoomTypes');
+                                        }
+                                        function deleteRoomTypeCoefRow(row) {
+                                            return deleteRow(row, 'RoomTypeCoefs');
+                                        }
+                                        function deleteBlockRoomTypeRow(row) {
+                                            return deleteRow(row, 'BlockRoomTypes');
+                                        }
+                                        function deleteRoomTypeConstRow(row) {
+                                            return deleteRow(row, 'RoomTypesConst');
+                                        }
+                                        function deleteMealTypeRow(row) {
+                                            return deleteRow(row, 'MealTypes');
+                                        }
+                                        function deleteMealTypeConstRow(row) {
+                                            return deleteRow(row, 'MealTypesConst');
+                                        }
+                                        function deleteStayPerRow(row) {
+                                            return deleteRow(row, 'StayPerTable');
+                                        }
+                                        function deleteBookingPerRow(row) {
+                                            return deleteRow(row, 'BookingPerTable');
+                                        }
+                                        function deleteCatPriceReductionRow(row) {
+                                            return deleteRow(row, 'CatPriceReductionTable');
+                                        }
+                                        function insSeasonRow()
+        {
+                                            var table = document.getElementById('SeasonsTable');
+                                            var rowCount = table.rows.length;
+                                            var row = table.insertRow(rowCount);
+                                            var index = rowCount - 1;
+                                            var prefix = "Seasons";
+                                            row.insertCell(0).innerHTML = getNumberField(prefix, index, "Number", "@Html.DisplayNameFor( model => model.Seasons[0].Number).ToString()", 0, 0);
+                                            row.insertCell(1).innerHTML = getNumberField(prefix, index, "Start", "@Html.DisplayNameFor( model => model.Seasons[0].Start).ToString()", 0, 0);
+                                            row.insertCell(2).innerHTML = getNumberField(prefix, index, "Finish", "@Html.DisplayNameFor( model => model.Seasons[0].Finish).ToString()", 0, 0);
+                                            row.insertCell(3).innerHTML = getTextField(prefix, index, "Description");
+                                            row.insertCell(4).innerHTML = getNumberField(prefix, index, "Reduction","@Html.DisplayNameFor( model => model.Seasons[0].Reduction).ToString()", 1, 1);
+                                            row.insertCell(5).innerHTML = getDeleteButton("deleteSeasonRow");
+
+                                            validationInitialize();
+                                            return false;
+                                        }
+                                        function insRoomTypeRow() {
+                                            var table = document.getElementById('RoomTypes');
+                                            var rowCount = table.rows.length;
+                                            var row = table.insertRow(rowCount);
+                                            var index = rowCount - 1;
+                                            var prefix = "RoomTypes.RoomTypes";
+
+                                            row.insertCell(0).innerHTML = getTextField(prefix, index, "RoomTypeCode");
+                                            row.insertCell(1).innerHTML = getTextField(prefix, index, "Name");
+                                            row.insertCell(2).innerHTML = getNumberField(prefix, index, "PeopleNum", "@Html.DisplayNameFor( model => model.RoomTypes.RoomTypes[0].PeopleNum).ToString()", 0, 0);
+                                            row.insertCell(3).innerHTML = getTextField(prefix, index, "Description");
+                                            row.insertCell(4).innerHTML = getNumberField(prefix, index, "LowerBound", "@Html.DisplayNameFor( model => model.RoomTypes.RoomTypes[0].LowerBound).ToString()", 0, 1);
+                                            row.insertCell(5).innerHTML = getNumberField(prefix, index, "UpperBound", "@Html.DisplayNameFor( model => model.RoomTypes.RoomTypes[0].UpperBound).ToString()", 0, 1);
+                                            row.insertCell(6).innerHTML = getNumberField(prefix, index, "OperationalCost", "@Html.DisplayNameFor( model => model.RoomTypes.RoomTypes[0].OperationalCost).ToString()", 0, 1);
+                                            row.insertCell(7).innerHTML = getNumberField(prefix, index, "MarketBasePrice", "@Html.DisplayNameFor( model => model.RoomTypes.RoomTypes[0].MarketBasePrice).ToString()", 0, 1);
+                                            row.insertCell(8).innerHTML = getNumberField(prefix, index, "Quantity", "@Html.DisplayNameFor( model => model.RoomTypes.RoomTypes[0].Quantity).ToString()", 0, 0);
+                                            row.insertCell(9).innerHTML = getDeleteButton("deleteRoomTypeRow");
+
+                                            validationInitialize();
+                                            return false;
+                                        }
+                                        function insRoomTypeCoefRow() {
+                                            var table = document.getElementById('RoomTypeCoefs');
+                                            var rowCount = table.rows.length;
+                                            var row = table.insertRow(rowCount);
+                                            var index = rowCount - 1;
+                                            var prefix = "RoomTypes.RoomTypeCoefs";
+                                            @if (Model.RoomTypes.IsEditable)
+                                            {
+                @:row.insertCell(0).innerHTML = getTextField(prefix, index, "RoomTypeCode");
+            }
+            else
+            {
+                @:row.insertCell(0).innerHTML= replaceIndex("@Html.GetJSString(@Html.DropDownListFor(model=>model.RoomTypes.RoomTypeCoefs[0].RoomTypeCode, roomTypes, new { @class = "selectpicker" }).ToString() + @Html.ValidationMessageFor(model => model.RoomTypes.ChildRoomTypes[0].Parent, "", new { @class = "text-danger" }).ToString())", index);
+                @:$('select').selectpicker();
+            }
+            row.insertCell(1).innerHTML = getNumberField(prefix, index, "PeopleNum", "@Html.DisplayNameFor( model => model.RoomTypes.RoomTypeCoefs[0].PeopleNum).ToString()", 0, 0);
+            row.insertCell(2).innerHTML = getNumberField(prefix, index, "Coef", "@Html.DisplayNameFor( model => model.RoomTypes.RoomTypeCoefs[0].Coef).ToString()", 0, 0);
+            row.insertCell(3).innerHTML = getDeleteButton("deleteRoomTypeCoefRow");
+
+            validationInitialize();
+            return false;
+        }
+        function insBlockRoomTypeRow() {
+            var table = document.getElementById('BlockRoomTypes');
+            var rowCount = table.rows.length;
+            var row = table.insertRow(rowCount);
+            var index = rowCount - 1;
+            var prefix = "RoomTypes.ChildRoomTypes";
+            var i = 0;
+            @if (Model.RoomTypes.IsEditable)
+            {
+                @:row.insertCell(0).innerHTML = "<h5>Room Type Codes:</h5>";
+                @:row.insertCell(1).innerHTML = getTextField(prefix, index, "Parent");
+                @:row.insertCell(2).innerHTML = getTextField(prefix, index, "Child");
+                @:i = 1;
+            }
+            else
+            {
+                @:row.insertCell(0).innerHTML= replaceIndex("@Html.GetJSString(@Html.DropDownListFor(model=>model.RoomTypes.ChildRoomTypes[0].Parent, roomTypes, new { @class = "selectpicker" }).ToString() + @Html.ValidationMessageFor(model => model.RoomTypes.ChildRoomTypes[0].Parent, "", new { @class = "text-danger" }).ToString())", index);
+                @:row.insertCell(1).innerHTML = replaceIndex("@Html.GetJSString(@Html.DropDownListFor(model => model.RoomTypes.ChildRoomTypes[0].Child, roomTypes, new { @class = "selectpicker" }).ToString() + @Html.ValidationMessageFor(model => model.RoomTypes.ChildRoomTypes[0].Child, "", new { @class = "text-danger" }).ToString())", index);
+                @:$('select').selectpicker();
+            }
+            row.insertCell(2 + i).innerHTML = getNumberField(prefix, index, "Quantity", "@Html.DisplayNameFor( model => model.RoomTypes.ChildRoomTypes[0].Quantity).ToString()", 0, 0);
+            row.insertCell(3 + i).innerHTML = getDeleteButton("deleteBlockRoomTypeRow");
+
+            validationInitialize();
+            return false;
+        }
+        function insRoomTypeConstRow() {
+            var table = document.getElementById('RoomTypesConst');
+            var rowCount = table.rows.length;
+            var row = table.insertRow(rowCount);
+            var index = rowCount - 1;
+            var i = 0;
+            @if (Model.RoomTypes.IsEditable)
+            {
+                @:var prefix = "RoomTypes.PriceConstraints";
+                @:row.insertCell(0).innerHTML = "<h5>Room Type Codes</h5>";
+                @:row.insertCell(1).innerHTML = getTextField(prefix, index, "Less");
+                @:row.insertCell(2).innerHTML = getTextField(prefix, index, "More");
+                @:i = 1;
+            }
+            else
+            {
+                @:row.insertCell(0).innerHTML= replaceIndex("@Html.GetJSString(@Html.DropDownListFor(model => model.RoomTypes.PriceConstraints[0].Less, roomTypes, new { @class = "selectpicker" }).ToString() + @Html.ValidationMessageFor(model => model.RoomTypes.PriceConstraints[0].Less, "", new { @class = "text-danger" }).ToString())", index);
+                @:row.insertCell(1).innerHTML = replaceIndex("@Html.GetJSString(@Html.DropDownListFor(model => model.RoomTypes.PriceConstraints[0].More, roomTypes, new { @class = "selectpicker" }).ToString() + @Html.ValidationMessageFor(model => model.RoomTypes.PriceConstraints[0].More, "", new { @class = "text-danger" }).ToString())", index);
+                @:$('select').selectpicker();
+            }
+            row.insertCell(2 + i).innerHTML = getDeleteButton("deleteRoomTypeConstRow");
+
+            validationInitialize();
+            return false;
+        }
+        function insMealTypeRow() {
+            var table = document.getElementById('MealTypes');
+            var rowCount = table.rows.length;
+            var row = table.insertRow(rowCount);
+            var index = rowCount - 1;
+            var prefix = "MealTypes.MealTypes";
+
+            row.insertCell(0).innerHTML=replaceIndex("@Html.GetJSString(Html.DropDownListFor(model=>model.MealTypes.MealTypes[0].Number, mealTypes, new { @class = "selectpicker" }).ToString() + @Html.ValidationMessageFor(model => model.MealTypes.MealTypes[0].Number, "", new { @class = "text-danger" }).ToString())", index);
+            $('select').selectpicker();
+            row.insertCell(1).innerHTML = getTextField(prefix, index, "Description");
+            row.insertCell(2).innerHTML = getNumberField(prefix, index, "OperationalCost", "@Html.DisplayNameFor( model => model.MealTypes.MealTypes[0].OperationalCost).ToString()", 0, 1);
+            row.insertCell(3).innerHTML = getNumberField(prefix, index, "MarketBasePrice", "@Html.DisplayNameFor( model => model.MealTypes.MealTypes[0].MarketBasePrice).ToString()", 0, 1);
+            row.insertCell(4).innerHTML = getDeleteButton("deleteMealTypeRow");
+
+            validationInitialize();
+                return false;
+        }
+        function insMealTypeConstRow() {
+            var table = document.getElementById('MealTypesConst');
+            var rowCount = table.rows.length;
+            var row = table.insertRow(rowCount);
+            var index = rowCount - 1;
+            row.insertCell(0).innerHTML = replaceIndex("@Html.GetJSString(Html.DropDownListFor(model=>model.MealTypes.PriceConstraints[0].Less, mealTypes, new { @class = "selectpicker" }).ToString()+ @Html.ValidationMessageFor(model => model.MealTypes.PriceConstraints[0].Less, "", new { @class = "text-danger" }).ToString())", index);
+            row.insertCell(1).innerHTML =replaceIndex("@Html.GetJSString(Html.DropDownListFor(model => model.MealTypes.PriceConstraints[0].More, mealTypes, new { @class = "selectpicker" }).ToString()+ @Html.ValidationMessageFor(model => model.MealTypes.PriceConstraints[0].More, "", new { @class = "text-danger" }).ToString())", index);
+            $('select').selectpicker();
+            row.insertCell(2).innerHTML = getDeleteButton("deleteMealTypeConstRow");
+
+            validationInitialize();
+            return false;
+        }
+        function insStayPerRow() {
+            var table = document.getElementById('StayPerTable');
+            var rowCount = table.rows.length;
+            var row = table.insertRow(rowCount);
+            var index = rowCount - 1;
+            var prefix = "Categories.StayPeriods";
+            row.insertCell(0).innerHTML = index +getHiddenNumberField(prefix, index, "Number", "@Html.DisplayNameFor( model => model.Categories.StayPeriods[0].Number).ToString()", index, 0);
+            row.insertCell(1).innerHTML = getNumberField(prefix, index, "LowerBound", "@Html.DisplayNameFor( model => model.Categories.StayPeriods[0].LowerBound).ToString()", 0, 0);
+            row.insertCell(2).innerHTML = getNumberField(prefix, index, "UpperBound", "@Html.DisplayNameFor( model => model.Categories.StayPeriods[0].UpperBound).ToString()", 0, 0);
+            row.insertCell(3).innerHTML = getDeleteButton("deleteStayPerRow");
+
+            validationInitialize();
+            return false;
+        }
+        function insBookingPerRow() {
+            var table = document.getElementById('BookingPerTable');
+            var rowCount = table.rows.length;
+            var row = table.insertRow(rowCount);
+            var index = rowCount - 1;
+            var prefix = "Categories.BookingPeriods";
+            row.insertCell(0).innerHTML = index + getHiddenNumberField(prefix, index, "Number", "@Html.DisplayNameFor( model => model.Categories.BookingPeriods[0].Number).ToString()", index, 0);
+            row.insertCell(1).innerHTML = getNumberField(prefix, index, "LowerBound", "@Html.DisplayNameFor( model => model.Categories.BookingPeriods[0].LowerBound).ToString()", 0, 0);
+            row.insertCell(2).innerHTML = getNumberField(prefix, index, "UpperBound", "@Html.DisplayNameFor( model => model.Categories.BookingPeriods[0].UpperBound).ToString()", 0, 0);
+            row.insertCell(3).innerHTML = getDeleteButton("deleteBookingPerRow");
+
+            validationInitialize();
+            return false;
+        }
+        function insCatPriceReductionRow() {
+            var table = document.getElementById('CatPriceReductionTable');
+            var rowCount = table.rows.length;
+            var row = table.insertRow(rowCount);
+            var index = rowCount - 1;
+            var prefix = "Categories.PriceReductions";
+
+            row.insertCell(0).innerHTML = getNumberField(prefix, index, "StayPeriodNumber", "@Html.DisplayNameFor( model => model.Categories.PriceReductions[0].StayPeriodNumber).ToString()", 0, 0);
+            row.insertCell(1).innerHTML = getNumberField(prefix, index, "BookingPeriodNumber", "@Html.DisplayNameFor( model => model.Categories.PriceReductions[0].BookingPeriodNumber).ToString()", 0, 0);
+            row.insertCell(2).innerHTML = getNumberField(prefix, index, "Reduction", "@Html.DisplayNameFor( model => model.Categories.PriceReductions[0].Reduction).ToString()", 1, 1);
+            row.insertCell(3).innerHTML = getDeleteButton("deleteCatPriceReductionRow");
+            validationInitialize();
+            return false;
+        }
+        function validationInitialize()
+        {
+            var $form = $('form');
+            $form.removeData('validator');
+            $form.removeData('unobtrusiveValidation');
+            $.validator.unobtrusive.parse($form);
+        }
+        function hideRoomPriceCoefs(cb)
+        {
+            var div = document.getElementById('RoomTypeCoefsPanel');
+            if (cb.checked)
+                div.style.display = 'none';
+            else
+                div.style.display = 'block';       
+            
+        }
+    </script>
+    <script src="/Scripts/bootstrap-select.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="~/Content/bootstrap-select.css" />
+}

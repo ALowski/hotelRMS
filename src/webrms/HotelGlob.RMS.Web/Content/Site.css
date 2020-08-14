@@ -1,0 +1,158 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+.field-validation-valid
+{
+    display: none;
+}
+.validation-summary-valid
+{
+    display: none;
+}
+
+
+/*Table*/
+#calcOutputView {
+    width: 100%;
+}
+.table-row {
+    display: flex;
+}
+.table-cell {
+    display: flex;
+    flex-basis: 12.5%;
+    flex-grow: 1;
+    border-right: 1px solid black;
+}
+.info {
+	border-bottom: 1px dotted rgba(128, 128, 128, 0.5);
+}
+.header-dates {
+	background: #18181f;
+	color: white;
+}
+.header-dates .date:not(:last-child) {
+	box-shadow: inset -1px 0 0 #BDBDD7;
+}
+.date {
+	display:flex;
+	justify-content:center;
+}
+.title {
+	flex-basis: 12.5%;
+	background: #18181f;
+	color: white;
+}
+.column {
+   flex-basis: 12%;
+    display: flex;
+    flex-direction: column;
+    background: #f8f8fd;
+}
+.price-cont {
+    flex-direction: column;
+    justify-content: center;
+}
+.cont-aligner {
+   align-self: center;
+}
+.room-type {
+	font-weight: 600;
+}
+.room-type a {
+	color: white;
+	text-decoration: none;
+	padding-left: 5px;
+	background: #2d2d39;
+	display: block;
+	text-align: center;
+	width: 100%;
+	padding: 5px;
+	letter-spacing: 0.05em;
+}
+
+.room-type .doubleroom {
+	background: #383848;
+}
+
+.item1 {
+	background-color: #BDBDD7;
+}
+.item2 {
+	background-color: #7f7f9d;
+}
+.item3 {
+	background-color: #6e6e87
+}
+.item1, .item2, .item3 {
+	padding: 3px;
+    width: calc(100%/3);
+	color: white;
+	flex-grow: 1;
+	text-align: center;
+    font-size: .9em;
+}
+.p5 {
+	padding: 5px;
+}
+.price {
+    display: flex;
+    margin: auto;
+    font-size: 1.3em;
+    color: #2177ca;
+    align-items: center;
+}
+.currency {
+	position:absolute;
+	font-size: .6em;
+}
+
+.active {
+	background: #fafaf3;
+	
+}
+.table-cont {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+#prevButton, #nextButton {
+    font-size: 1.9em;
+    color: black;
+}
+.price .glyphicon {
+    color: black;
+    font-size: .6em;
+    padding-right: 1px;
+    top:0;
+}
+.remove, .peopleNumber {
+    color: black;
+    font-size: .7em;
+}
+.peopleNumber {
+    padding-top: 2px;
+    padding-right: 4px;
+}

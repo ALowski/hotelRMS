@@ -1,0 +1,62 @@
+﻿@using HotelGlob.RMS.Data.Models
+@model HotelGlob.RMS.Data.Models.HotelSettings
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Hotel</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Settings)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Settings)
+        </dd>
+        
+        <dt>
+            @Html.DisplayNameFor(model => model.IsRmsEnalbed)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IsRmsEnalbed)
+        </dd>
+    </dl>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>CreatedOn</th>
+            <th>Body</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var log in Model.Logs.OrderByDescending(l => l.CreatedOn))
+        {
+            <tr class="@(log.LogType == LogType.Error ? "danger" : "")">
+                <td>@log.CreatedOn</td>
+                <td>@log.Body</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<p>
+    <a href="@Url.Action("Index", "Calculations", new { id = Model.Id })">View calculations</a> |
+    @Html.ActionLink("Edit", "Edit", new {id = Model.Id}) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

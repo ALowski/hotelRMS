@@ -1,0 +1,103 @@
+﻿@model HotelGlob.RMS.Data.Models.Parser_RoomInfo
+
+@{
+    ViewBag.Title = "Parser Setting";
+}
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Parser Setting</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Hotel.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Hotel.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RoomTypeId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RoomType.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MealTypeId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MealType.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RoomName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RoomName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PeopleNum)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PeopleNum)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Cancelation)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Cancelation)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Prepayment)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Prepayment)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.City)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.City)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.HotelName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HotelName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MealName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MealName)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index", new { hotelId = Model.HotelId })
+        </div>
+    }
+</div>

@@ -1,0 +1,52 @@
+﻿@model IEnumerable<HotelGlob.RMS.Data.Models.Calculation>
+
+@{
+    ViewBag.Title = "Calculated Prices";
+}
+
+<h2>Calculated Prices</h2>
+@Html.Hidden("numValue", 0)
+
+    <div class="table-cont" >
+        <a id="prevButton"><span class="glyphicon glyphicon-triangle-left" aria-hidden="true"></span></a>
+        <div id="calcOutputView">@Html.Partial("PredictionsOutputList", Model)</div>
+        <a id="nextButton"><span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span></a>
+    </div>
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+        <script>
+        $(document).ready(function () {
+            $("#prevButton").click(function () {
+                var el = document.getElementsByName("numValue")[0];
+                el.value = Number(el.value) - 1;
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("PredictionsOutputList", "Calculations")',
+                    data: {
+                        id: @ViewBag.Id,
+                        num: el.value
+                        },
+                    success: function (data) {
+                        $("#calcOutputView").html(data);
+                    }
+                });
+            });
+            $("#nextButton").click(function () {
+                var el = document.getElementsByName("numValue")[0];
+                el.value = Number(el.value) + 1;
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("PredictionsOutputList", "Calculations")',
+                    data: {
+                        id: @ViewBag.Id,
+                        num: el.value
+                        },
+                    success: function (data) {
+                        $("#calcOutputView").html(data);
+                    }
+                });
+            });
+        });
+        </script>
+    }

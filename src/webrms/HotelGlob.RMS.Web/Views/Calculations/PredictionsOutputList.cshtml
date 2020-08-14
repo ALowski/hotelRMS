@@ -1,0 +1,87 @@
+﻿@model IEnumerable<HotelGlob.RMS.Data.Models.Calculation>
+@{
+    Dictionary<int, string> stayNames = ViewBag.StayNames as Dictionary<int, string>;
+    Dictionary<int, string> bookingNames = ViewBag.BookingNames as Dictionary<int, string>;
+    var r = 0;
+}
+
+	<div class="table-row header-dates">
+		<div class="table-cell title p5">	</div>
+        @for (int i = 0; i < 7; i++)
+        {
+            <div class="table-cell date p5">
+                @DateTime.Now.Date.AddDays(7 * ViewBag.Num + i).ToShortDateString()
+            </div>
+        }
+	</div>
+    
+    @foreach (var room in Model.SelectMany(c => c.Predictions).GroupBy(c => c.RoomTypeId).ToList())
+    {
+        var roomTypeName = room.Select(c => c.RoomType)?.FirstOrDefault()?.Name;
+        r++;
+        var id = "exp" + r;
+        var href="#"+ id;
+        <div class="table-row room-type panel-collapse collapse">
+            <a data-toggle="collapse" data-parent="@href" aria-expanded="true" aria-controls="@id" href="@href">@roomTypeName</a>
+        </div>
+        <div id="@id" class="collapse in" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true">
+            <div class="table-row room-type">
+                <div class="table-cell column"></div>
+                @for (int i = 0; i < 7; i++)
+                {
+                    var calculation=  Model.FirstOrDefault(c => c.PredictionDate.Date == DateTime.Now.Date.AddDays(7 * ViewBag.Num + i));
+                    var prices = calculation?.Predictions?.Where(c => c.RoomTypeId == room.Key)?.ToList();
+                    var has = prices != null && prices.Any();
+                    if (has)
+                    {
+                        var pn = prices.Select(c => c.PeopleNum)?.FirstOrDefault();
+                        prices = prices.Where(c => c.PeopleNum == pn).ToList();
+                    }
+
+                    <div class="table-cell">
+                        <span class="item1" title="Expected load">@(has?Math.Round(prices.Sum(c => c.ExpectedLoad),2).ToString():null)</span>
+                        <span class="item2" title="Cancelations">@(has?Math.Round(prices.Sum(c => c.Cancelation),2).ToString():null)</span>
+                        <span class="item3" title="NoShows">@(has?Math.Round(prices.Sum(c => c.NoShows),2).ToString():null)</span>
+                    </div>
+                }
+            </div>
+            
+                    @foreach (var meal in room.GroupBy(c => c.MealTypeId).ToList())
+                    {
+                        var mealType = meal.Select(c => c.MealType)?.FirstOrDefault();
+
+                        foreach (var cat in room.GroupBy(c => c.CategoryType).ToList())
+                        {
+                            <div class="table-row info">
+                                <div class="table-cell p5 column">
+                                    <div class="cont-aligner">
+                                        <div title=@mealType.Name>Meal-type:@mealType.UID</div>
+                                        <div title="Stay period">SP : @stayNames[cat.Key] days</div>
+                                        <div title="Booking period">BP : @bookingNames[cat.Key] days</div>
+                                    </div>
+                                </div>
+                                @for (int i = 0; i < 7; i++)
+                                {
+                                    var calculation = Model.FirstOrDefault(c => c.PredictionDate.Date == DateTime.Now.Date.AddDays(7 * ViewBag.Num + i));
+                                    var prices = calculation?.Predictions?.Where(c => c.RoomTypeId == room.Key && c.MealTypeId == meal.Key && c.CategoryType == cat.Key)?.ToList();
+                                    <div class="table-cell price-cont">
+                                        <div class="cont-aligner">
+                                            @if (prices != null)
+                                            {
+                                                foreach (var peopleNum in prices.GroupBy(c => c.PeopleNum).ToList())
+                                                {
+
+                                                    <div class="price"><span class="glyphicon glyphicon-user" aria-hidden="true"></span><span class="remove" aria-hidden="true">x</span><span class="peopleNumber">@peopleNum.Key</span> @Math.Round(peopleNum.FirstOrDefault().Price, 2)<span class="currency">$</span></div>
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    }
+
+        </div>
+    }
+
+
